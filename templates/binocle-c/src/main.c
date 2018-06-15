@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
   char font_filename[1024];
   sprintf(font_filename, "%s%s", BINOCLE_DATA_DIR, "font.fnt");
-  font = binocle_bitmapfont_from_file(font_filename);
+  font = binocle_bitmapfont_from_file(font_filename, true);
 
   char font_image_filename[1024];
   sprintf(font_image_filename, "%s%s", BINOCLE_DATA_DIR, "font.png");
