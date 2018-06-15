@@ -1,7 +1,7 @@
 var fs = require('fs-extra');
 var  chalk = require('chalk');
 var hb = require('handlebars');
-var spawn = require('child_process').spawnSync;
+var spawnSync = require('child_process').spawnSync;
 var path = require('path');
 var processor = require('../../utils/processor');
 var error = chalk.bold.red;
@@ -50,7 +50,7 @@ Cmd.prototype.run = function(app, dir) {
 Cmd.prototype.upgradeBinocle = function(dir) {
     console.log("Upgrading binocle");
     try {
-        var child = spawn('/usr/bin/git', ['-C', dir+'/Binocle', 'pull', 'origin']);
+        var child = spawnSync('/usr/bin/git', ['-C', './Binocle', 'pull', 'origin'], {cwd: dir});
         if (child.error) {
             console.log(error(err.message));
             return false;
@@ -65,7 +65,7 @@ Cmd.prototype.upgradeBinocle = function(dir) {
 Cmd.prototype.upgradeBinocleC = function(dir) {
     console.log("Upgrading binocle-c");
     try {
-        var child = spawn('/usr/bin/git', ['-C', dir+'/binocle-c', 'pull', 'origin']);
+        var child = spawnSync('/usr/bin/git', ['-C', './binocle-c', 'pull', 'origin'], {cwd: dir});
         if (child.error) {
             console.log(error(err.message));
             return false;
