@@ -35,7 +35,7 @@ binocle_camera camera;
 binocle_sprite player;
 kmVec2 player_pos;
 binocle_gd gd;
-binocle_bitmapfont font;
+binocle_bitmapfont *font;
 binocle_image font_image;
 binocle_texture font_texture;
 binocle_material font_material;
@@ -68,8 +68,13 @@ void main_loop() {
   }
 
   binocle_window_clear(&window);
-  binocle_sprite_draw(player, &gd, (uint64_t)player_pos.x, (uint64_t)player_pos.y, adapter.viewport);
-  binocle_bitmapfont_draw_string(font, "TEST", 12, &gd, 20, 20, adapter.viewport);
+  kmVec2 scale;
+  scale.x = 1.0f;
+  scale.y = 1.0f;
+  binocle_sprite_draw(player, &gd, (uint64_t)player_pos.x, (uint64_t)player_pos.y, adapter.viewport, 0, scale, &camera);
+  kmMat4 view_matrix;
+  kmMat4Identity(&view_matrix);
+  binocle_bitmapfont_draw_string(font, "TEST", 12, &gd, 20, 20, adapter.viewport, binocle_color_white(), view_matrix);
   //binocle_sprite_draw(font_sprite, &gd, (uint64_t)font_sprite_pos.x, (uint64_t)font_sprite_pos.y, adapter.viewport);
   binocle_window_refresh(&window);
   binocle_window_end_frame(&window);
@@ -111,7 +116,7 @@ int main(int argc, char *argv[])
   font_material = binocle_material_new();
   font_material.texture = &font_texture;
   font_material.shader = &shader;
-  font.material = &font_material;
+  font->material = &font_material;
   font_sprite = binocle_sprite_from_material(&font_material);
   font_sprite_pos.x = 0;
   font_sprite_pos.y = -256;
