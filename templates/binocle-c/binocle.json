@@ -1,6 +1,8 @@
 {
     "project": {
         "name": "{{project_name}}",
-        "engine": "binocle-c"
+        "engine": "binocle-c",
+        "ios_development_team_id": "RVW3WUM6FX",
+	    "ios_bundle_id": "it.altralogica.binocle"
     }
 }
