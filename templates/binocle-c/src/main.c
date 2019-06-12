@@ -24,7 +24,6 @@
 #include "binocle_gd.h"
 #include "binocle_log.h"
 #include "binocle_bitmapfont.h"
-#include "sys_config.h"
 
 //#define GAMELOOP 1
 
@@ -41,6 +40,7 @@ binocle_texture font_texture;
 binocle_material font_material;
 binocle_sprite font_sprite;
 kmVec2 font_sprite_pos;
+char *binocle_assets_dir;
 
 void main_loop() {
   binocle_window_begin_frame(&window);
@@ -89,14 +89,15 @@ int main(int argc, char *argv[])
   adapter = binocle_viewport_adapter_new(window, BINOCLE_VIEWPORT_ADAPTER_KIND_SCALING, BINOCLE_VIEWPORT_ADAPTER_SCALING_TYPE_PIXEL_PERFECT, window.original_width, window.original_height, window.original_width, window.original_height);
   camera = binocle_camera_new(&adapter);
   input = binocle_input_new();
+  binocle_assets_dir = binocle_sdl_assets_dir();
   char filename[1024];
-  sprintf(filename, "%s%s", BINOCLE_DATA_DIR, "wabbit_alpha.png");
+  sprintf(filename, "%s%s", binocle_assets_dir, "wabbit_alpha.png");
   binocle_image image = binocle_image_load(filename);
   binocle_texture texture = binocle_texture_from_image(image);
   char vert[1024];
-  sprintf(vert, "%s%s", BINOCLE_DATA_DIR, "default.vert");
+  sprintf(vert, "%s%s", binocle_assets_dir, "default.vert");
   char frag[1024];
-  sprintf(frag, "%s%s", BINOCLE_DATA_DIR, "default.frag");
+  sprintf(frag, "%s%s", binocle_assets_dir, "default.frag");
   binocle_shader shader = binocle_shader_load_from_file(vert, frag);
   binocle_material material = binocle_material_new();
   material.texture = &texture;
@@ -106,11 +107,11 @@ int main(int argc, char *argv[])
   player_pos.y = 50;
 
   char font_filename[1024];
-  sprintf(font_filename, "%s%s", BINOCLE_DATA_DIR, "font.fnt");
+  sprintf(font_filename, "%s%s", binocle_assets_dir, "font.fnt");
   font = binocle_bitmapfont_from_file(font_filename, true);
 
   char font_image_filename[1024];
-  sprintf(font_image_filename, "%s%s", BINOCLE_DATA_DIR, "font.png");
+  sprintf(font_image_filename, "%s%s", binocle_assets_dir, "font.png");
   font_image = binocle_image_load(font_image_filename);
   font_texture = binocle_texture_from_image(font_image);
   font_material = binocle_material_new();

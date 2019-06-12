@@ -35,16 +35,12 @@ SET(VERSION_MINOR "1")
 SET(VERSION_PATCH "0")
 SET(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
-set(BINOCLE_LINK_LIBRARIES binocle flac freetype vorbis ogg kazmath)
-
-if (NOT EMSCRIPTEN)
-	set(BINOCLE_LINK_LIBRARIES ${BINOCLE_LINK_LIBRARIES} sdl zlib)
-endif()
+set(BINOCLE_LINK_LIBRARIES binocle-static)
 
 if (MSVC)
 	message("Including Windows defines")
 	include(BinocleWindows)
-elseif(APPLE)
+elseif(APPLE AND NOT ANDROID)
 	if(IOS)
 		message("Including iOS defines")
 		include(BinocleIOS)
@@ -111,27 +107,6 @@ foreach(dir ${dirs})
   message(STATUS "dir='${dir}'")
 endforeach()
 
-if (NOT DEFINED BINOCLE_DATA_DIR)
-    if (APPLE)
-        if (IOS)
-            set(BINOCLE_DATA_DIR "")
-        else ()
-            set(BINOCLE_DATA_DIR "../Resources/")
-        endif ()
-    elseif (WIN32)
-        set(BINOCLE_DATA_DIR "../../../../../../assets/")
-    elseif (EMSCRIPTEN)
-        # TODO: make this relative but also make sure that it
-        # becomes relative in BinocleWeb.cmake as they have to be the same
-        set(BINOCLE_DATA_DIR "/Users/tanis/Documents/binocle-c/assets/")
-    endif ()
-endif ()
-message("Data dir is ${BINOCLE_DATA_DIR}")
-
-
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/sys_config.h.cmake ${CMAKE_SOURCE_DIR}/src/sys_config.h)
-SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/sys_config.h PROPERTIES GENERATED TRUE)
-
 if (APPLE)
     #if(IOS)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -142,7 +117,6 @@ if (APPLE)
     message("Resources list: ${RESOURCES}")
     #endif()
 endif ()
-
 
 if (ANDROID)
     include_directories(${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl/include)
@@ -155,6 +129,7 @@ target_link_libraries(${PROJECT_NAME} ${BINOCLE_LINK_LIBRARIES})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 99)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
 if (APPLE)
@@ -181,7 +156,7 @@ if (APPLE)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
     #set_target_properties(${PROJECT_NAME} PROPERTIES RESOURCE "${RESOURCES}")
     # file(GLOB_RECURSE RESOURCES
-    # 			${CMAKE_SOURCE_DIR}/data/*
+    # 			${CMAKE_SOURCE_DIR}/assets/*
     # )
     # set_source_files_properties(
     # 			${RESOURCES}
@@ -197,8 +172,11 @@ if (APPLE)
                 ${PROJECT_NAME}
                 PROPERTIES
                 MACOSX_BUNDLE YES
-                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/build/ios/Info.plist"
-                XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
+                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/binocle-c/build/ios/Info.plist"
+                XCODE_ATTRIBUTE_CODE_SIGN_STYLE "Automatic"
+                XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iOS Developer"
+                XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER "Automatic"
+                XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "${IOS_DEVELOPMENT_TEAM_ID}"
                 XCODE_ATTRIBUTE_INFOPLIST_PREPROCESS YES
                 XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET 8.0
                 RESOURCE "${RESOURCES}"
@@ -208,7 +186,7 @@ if (APPLE)
         #add_custom_command(
         #    TARGET ${NAME}
         #    POST_BUILD
-        #    COMMAND /Developer/Library/PrivateFrameworks/DevToolsCore.framework/Resources/pbxcp -exclude .DS_Store -exclude CVS -exclude .svn -resolve-src-symlinks ${CMAKE_SOURCE_DIR}/data ${APP_NAME}
+        #    COMMAND /Developer/Library/PrivateFrameworks/DevToolsCore.framework/Resources/pbxcp -exclude .DS_Store -exclude CVS -exclude .svn -resolve-src-symlinks ${CMAKE_SOURCE_DIR}/assets ${APP_NAME}
         #)
     endif ()
 endif ()
@@ -228,14 +206,18 @@ elseif (APPLE)
 endif ()
 
 if (ANDROID)
-    message("Post build will copy to ${CMAKE_CURRENT_BINARY_DIR}/../../../android-project/libs/${ANDROID_ABI}/libmain.so")
+    message("Post build will copy to ${CMAKE_CURRENT_BINARY_DIR}/../../android-project/app/libs/${ANDROID_ABI}/libmain.so")
     add_custom_command(TARGET ${PROJECT_NAME}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_FILE:${PROJECT_NAME}> ${CMAKE_CURRENT_BINARY_DIR}/../../../android-project/libs/${ANDROID_ABI}/libmain.so")
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${CMAKE_CURRENT_BINARY_DIR}/../../android-project/app/libs/${ANDROID_ABI}/libmain.so)
+    message("Post build will copy to ${CMAKE_CURRENT_BINARY_DIR}/../../android-project/app/libs/${ANDROID_ABI}/libhidapi.so")
     add_custom_command(TARGET ${PROJECT_NAME}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${PROJECT_NAME}> ${CMAKE_CURRENT_BINARY_DIR}/../../../android-project/libs/${ANDROID_ABI}/libmain.so")
-    #	file(RENAME ${CMAKE_CURRENT_BINARY_DIR}/../android-project/libs/${ANDROID_ABI}/lib${PROJECT_NAME}.so ${CMAKE_CURRENT_BINARY_DIR}/../android-project/libs/${ANDROID_ABI}/libmain.so)
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hidapi> ${CMAKE_CURRENT_BINARY_DIR}/../../android-project/app/libs/${ANDROID_ABI}/libhidapi.so)
+    add_custom_command(TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${ANDROID_NDK}/sources/cxx-stl/llvm-libc++/libs/${ANDROID_ABI}/libc++_shared.so ${CMAKE_CURRENT_BINARY_DIR}/../../android-project/app/libs/${ANDROID_ABI}/libc++_shared.so)
+    #file(RENAME ${CMAKE_CURRENT_BINARY_DIR}/../android-project/libs/${ANDROID_ABI}/lib${PROJECT_NAME}.so ${CMAKE_CURRENT_BINARY_DIR}/../android-project/libs/${ANDROID_ABI}/libmain.so)
 endif ()
 
 add_subdirectory(binocle-c/src)

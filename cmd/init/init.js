@@ -12,6 +12,10 @@ var Cmd = function() {
 };
 
 Cmd.prototype.run = function(app, project_name, dir, engine) {
+    if (typeof engine === "undefined" || engine == '') {
+        // If not set, we set the default engine to binocle-c
+        engine = 'binocle-c';
+    }
     if (engine != 'binocle' && engine != 'binocle-c') {
         console.log(error('Wrong engine specified: %s'), engine);
         return;
@@ -59,7 +63,6 @@ Cmd.prototype.run = function(app, project_name, dir, engine) {
         processor.processFile(path.join(__dirname, '../../templates/'+engine+'/src/main.c'), dir+'/src/main.c', {});
         processor.processFile(path.join(__dirname, '../../templates/'+engine+'/src/my_game.c'), dir+'/src/my_game.c', {});
         processor.processFile(path.join(__dirname, '../../templates/'+engine+'/src/my_game.h'), dir+'/src/my_game.h', {});
-        processor.processFile(path.join(__dirname, '../../templates/'+engine+'/src/sys_config.h.cmake'), dir+'/src/sys_config.h.cmake', {});
         processor.processFile(path.join(__dirname, '../../templates/'+engine+'/src/gameplay/CMakeLists.txt'), dir+'/src/gameplay/CMakeLists.txt', {});
         processor.processFile(path.join(__dirname, '../../templates/'+engine+'/src/gameplay/my_script.c'), dir+'/src/gameplay/my_script.c', {});
         processor.processFile(path.join(__dirname, '../../templates/'+engine+'/src/gameplay/my_script.h'), dir+'/src/gameplay/my_script.h', {});

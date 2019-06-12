@@ -49,4 +49,11 @@ program.command('build <dir> [target]')
     cmd.build.run(app, dir, target);
 });
 
+program.command('run <dir> [target]')
+.description('run the project in <dir> for the target [target].')
+.action(function(dir, target) {
+    target = target || app.platform;
+    cmd.run.run(app, dir, target);
+});
+
 program.parse(process.argv);
