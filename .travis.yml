@@ -1,18 +1,19 @@
 language: rust
-os:
-- osx
 rust:
 - stable
 matrix:
   include:
+  - os: osx
   - env:
     - NAME=bone
     - TARGET=x86_64-apple-darwin
     - PACKAGE=bone-macos.tgz
+  - os: linux
   - env:
     - NAME=bone
     - TARGET=x86_64-unknown-linux-gnu
     - PACKAGE=bone-linux.tgz
+  - os: windows
   - env:
     - NAME=bone
     - TARGET=x86_64-pc-windows-gnu
