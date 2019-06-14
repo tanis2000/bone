@@ -1,5 +1,7 @@
 # Bone, the Binocle project generator
 
+[![Build Status](https://travis-ci.com/tanis2000/bone.svg?branch=master)](https://travis-ci.com/tanis2000/bone)
+
 Bone is a project generator and build tool for the Binocle engine, a 2D/3D videogame and application engine.
 
 The ultimate goal of Bone is to relieve the developer from all the tedious tasks like configuring CMake for different architectures, create build scripts, etc...
