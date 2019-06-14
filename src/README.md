@@ -6,7 +6,7 @@ The ultimate goal of Bone is to relieve the developer from all the tedious tasks
 
 The idea isn't new and it can feel like yet another wrapper around CMake, and it actually is like that :-P
 [Fips](https://github.com/floooh/fips) is a good alternative if you want to manage your C/C++ project on your own.
-The actual idea came from the [snow] and [lime] tools. They are pretty similar but written in JavaScript and Haxe. I definitely used those as a source of inspiration.
+The actual idea came from the [snow](https://github.com/snowkit/snow) and [lime](https://github.com/openfl/lime) tools. They are pretty similar but written in JavaScript and Haxe. I definitely used those as a source of inspiration.
 
 Bone is far from being finished, but it's good enough for my usage and can probably be of use to others as well. I can always use a hand to support more target architectures, so feel free to submit PR or open issues as needed.
 
