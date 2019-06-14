@@ -1,3 +1,7 @@
+use std::fmt::Display;
+use std::fmt::Formatter;
+use std::fmt::Result;
+
 pub enum Target {
     Mac,
     Windows,
@@ -8,29 +12,29 @@ pub enum Target {
     Unknown,
 }
 
-impl std::string::ToString for Target {
-    fn to_string(&self) -> std::string::String {
+impl Display for Target {
+    fn fmt(&self, f: &mut Formatter) -> Result {
         match self {
-            Mac => {
-                "mac".to_string()
+            Target::Mac => {
+                write!(f, "mac")
             }
-            Windows => {
-                "windows".to_string()
+            Target::Windows => {
+                write!(f, "windows")
             }
-            Linux => {
-                "linux".to_string()
+            Target::Linux => {
+                write!(f, "linux")
             }
-            Android => {
-                "android".to_string()
+            Target::Android => {
+                write!(f, "android")
             }
-            Ios => {
-                "ios".to_string()
+            Target::Ios => {
+                write!(f, "ios")
             }
-            Web => {
-                "web".to_string()
+            Target::Web => {
+                write!(f, "web")
             }
             _ => {
-                "unknown".to_string()
+                write!(f, "unknown")
             }
         }
     }

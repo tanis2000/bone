@@ -3,6 +3,8 @@ extern crate clap;
 extern crate derive_builder;
 extern crate handlebars;
 #[macro_use]
+extern crate serde;
+#[macro_use]
 extern crate serde_json;
 
 mod cmd;

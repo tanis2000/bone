@@ -98,24 +98,28 @@ impl Build {
                         let team_id = format!("IOS_DEVELOPMENT_TEAM_ID={}", ios_development_team_id);
                         let team_id_s = team_id.as_str();
                         match target {
-                            Mac => {
+                            Target::Mac => {
                                 parameters = ["-G", "Xcode", "-D", "DEBUG=1", "../.."].to_vec();
                             },
-                            Windows => {
+                            Target::Windows => {
                                 parameters = ["-G", "Unix Makefiles", "-D", "DEBUG=1", "../.."].to_vec();
                             },
-                            Linux => {
+                            Target::Linux => {
                                 parameters = ["-G", "Unix Makefiles", "-D", "DEBUG=1", "../.."].to_vec();
                             },
-                            Ios => {
+                            Target::Ios => {
                                 parameters = ["-G", "Xcode", "-D", "DEBUG=1", "-D", "IOS=1", "-D", team_id_s, "../.."].to_vec();
                             },
-                            Android => {
+                            Target::Android => {
                                 parameters = ["-G", "Unix Makefiles", "-D", "DEBUG=1", "-D", "ANDROID_ABI=armeabi-v7a", "-D", "ANDROID_STL=gnustl_static", "-D", "ANDROID_NATIVE_API_LEVEL=android-17", "-D", "CMAKE_TOOLCHAIN_FILE=../Binocle/build/cmake/android.toolchain.cmake", "../.."].to_vec();
                             },
-                            Web => {
+                            Target::Web => {
                                 command = "emcmake".to_string();
                                 parameters = ["cmake", "../..", "-DCMAKE_BUILD_TYPE=Release"].to_vec();
+                            }
+                            Target::Unknown => {
+                                println!("Bad target");
+                                return false;
                             }
                         }
                         let build_path_buf = path.join("build").join(target.to_string());
@@ -125,23 +129,23 @@ impl Build {
                         self.execute_command(&command, &parameters, &build_path_s);
 
                         match target {
-                            Mac => {
+                            Target::Mac => {
                                 command = "xcodebuild".to_string();
                                 parameters = [].to_vec();
                             },
-                            Windows => {
+                            Target::Windows => {
                                 println!("Do not know how to build for this target. Please submit a PR if you can help with Windows and Visual Studio scripting");
                                 return false;
                             },
-                            Linux => {
+                            Target::Linux => {
                                 command = "make".to_string();
                                 parameters = [].to_vec();
                             },
-                            Ios => {
+                            Target::Ios => {
                                 command = "xcodebuild".to_string();
                                 parameters = ["-allowProvisioningUpdates", "-sdk", "iphonesimulator"].to_vec();
                             },
-                            Android => {
+                            Target::Android => {
                                 command = "make".to_string();
                                 parameters = [].to_vec();
                                 self.execute_command(&command, &parameters, &build_path_s);
@@ -152,7 +156,7 @@ impl Build {
                                 self.execute_command(&command, &parameters, &android_path_s);
                                 return true;
                             },
-                            Web => {
+                            Target::Web => {
                                 command = "make".to_string();
                                 parameters = ["-j8"].to_vec();
                             },
