@@ -7,6 +7,7 @@ os:
 
 rust:
   - stable
+  - nightly
 
 cache: cargo
 
