@@ -16,7 +16,7 @@ matrix:
   - os: windows
     env:
     - NAME=bone
-    - TARGET=x86_64-pc-windows-gnu
+    - TARGET=x86_64-pc-windows-msvc
     - PACKAGE=bone-windows.tgz
 cache: cargo
 script:
