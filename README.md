@@ -12,6 +12,13 @@ The actual idea came from the [snow](https://github.com/snowkit/snow) and [lime]
 
 Bone is far from being finished, but it's good enough for my usage and can probably be of use to others as well. I can always use a hand to support more target architectures, so feel free to submit PR or open issues as needed.
 
+## Install Bone
+
+The quickest way is to download the binaries on the [Releases](https://github.com/tanis2000/bone/releases) page.
+Just get the one for your OS and you're ready to go.
+
+Otherwise you can just clone this repository and it yourself. You will need a recent Rust toolchain to do that.
+
 ## Create a new project
 
 Bone supports both the C version and C++ version of Binocle. As of the time I'm writing this, only the C version is available in the wild. The C++ version is still under closed source and will eventually be released in the future for historic reasons.

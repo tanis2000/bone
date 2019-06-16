@@ -31,6 +31,7 @@ deploy:
     secure: HWFS2/nEjFSiGsxmev4lHIwN0TEERYwpAqEbXKpH5trQoTEAgmXf3YyGxujVZyC0gtYuk9KkOmYvclt1x7BFrHHYqFfyp//A5sEJS4bCtaEytPBmyQ6SRHA4OwfLFxS6avXHTAUA9bvp/xORKnZCoI3YDdZaksXPLvdbRDY98v8ydsmmUo7+ihCK17Y5VSFc36U7CC29NCsmA6onxS5RVCXaUMcOVEeYdmUgo/dURIXNWP5+3QJntIIfvOlUlpG++4Tu4DmdbQxQRlBZs9ewCpgj1JuV2QQfbBquhuTytIAYmYB9VrFz5URnvdHvG09oDt/mEdd5Yvyo7cbeCzEOj8vPuubqQjoJl1h8mjU01q+AFYVZ0+TpW+RSzN85ndk8yB9IDkaoP7EGUkrbCYg0qSaaqr1H7tnZCOkBS2maqA87K7E5JFwST5EqZs1baxNZN/Ln4DAVSPxp871qJIeVgyFu5XM5Uz5f9zAxrpM7GhycdiXDzt1RjlOTCSWp2yuMoyRyUU59hHfDrgAMzkFkEG3nXIzN4bdfZbgvcKKSpu8P0Xi3940k9SyggCN5y6w1HQcn+SA75TZKR7OXZ0IBvRo5MJJj1hHfjzdp+erkkEZNrt2RO26EraWWVGkS8BIOn3vhQJyxzcI39WoVocu8oHRcV2/vsaETI+wS8E01F+4=
   file: ${PACKAGE}
   skip_cleanup: true
-  draft: true
+  draft: false # set this to true if you want to have drafts
   on:
     repo: tanis2000/bone
+    tags: true # set this to false to create a new build at every push
