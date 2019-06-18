@@ -1,13 +1,11 @@
 use serde::{Deserialize, Serialize};
-use serde_json::{Result, Value};
+use serde_json::{Value};
 use std::collections::HashMap;
-use std::io;
 use std::io::prelude::*;
-use std::fs::{self, DirEntry, File};
+use std::fs::{File};
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::{Command};
 use std::time::Duration;
-use crate::utils::Processor;
 use crate::utils::Target;
 
 #[derive(Serialize, Deserialize)]
@@ -31,11 +29,11 @@ pub struct Run {
 
 impl Run {
     pub fn run(&self) {
-        let app = self.app.clone().unwrap();
+        let _app = self.app.clone().unwrap();
         let dir = self.dir.clone().unwrap();
         let target_ss = self.target.clone().unwrap().clone();
         let target_s = target_ss.as_str();
-        let mut target = Target::Unknown;
+        let target: Target;
 
         match target_s {
             "mac" => {
@@ -107,14 +105,14 @@ impl Run {
                         }
                         let ios_development_team_id = &project_json["project"]["ios_development_team_id"];
                         let team_id = format!("IOS_DEVELOPMENT_TEAM_ID={}", ios_development_team_id);
-                        let team_id_s = team_id.as_str();
+                        let _team_id_s = team_id.as_str();
                         let project_name = &project_json["project"]["name"].as_str().unwrap();
                         match target {
                             Target::Mac => {
                                 let command = "open".to_string();
                                 let filename = format!("{}.app", project_name);
                                 let app_path = Path::new(&filename);
-                                let app_path_s = app_path.to_str().unwrap();
+                                let _app_path_s = app_path.to_str().unwrap();
                                 let app_name = project_name.to_string();
                                 let app_name_s = app_name.as_str();
                                 let parameters = [app_name_s];
@@ -161,10 +159,6 @@ impl Run {
                                 return false;
                             },
                             Target::Web => {
-                                println!("Do not know how to run for this target. Please submit a PR if you know what to do");
-                                return false;
-                            }
-                            Target::Unknown => {
                                 println!("Do not know how to run for this target. Please submit a PR if you know what to do");
                                 return false;
                             }

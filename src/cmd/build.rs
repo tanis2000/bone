@@ -1,10 +1,8 @@
-use serde_json::{Result, Value};
-use std::io;
+use serde_json::{Value};
 use std::io::prelude::*;
-use std::fs::{self, DirEntry, File};
+use std::fs::{File};
 use std::path::Path;
 use std::process::Command;
-use crate::utils::Processor;
 use crate::utils::Target;
 
 #[derive(Default, Builder, Debug)]
@@ -17,11 +15,11 @@ pub struct Build {
 
 impl Build {
     pub fn run(&self) {
-        let app = self.app.clone().unwrap();
+        let _app = self.app.clone().unwrap();
         let dir = self.dir.clone().unwrap();
         let target_ss = self.target.clone().unwrap().clone();
         let target_s = target_ss.as_str();
-        let mut target = Target::Unknown;
+        let target: Target;
 
         match target_s {
             "mac" => {
@@ -117,14 +115,15 @@ impl Build {
                                 command = "emcmake".to_string();
                                 parameters = ["cmake", "../..", "-DCMAKE_BUILD_TYPE=Release"].to_vec();
                             }
-                            Target::Unknown => {
-                                println!("Bad target");
-                                return false;
-                            }
                         }
                         let build_path_buf = path.join("build").join(target.to_string());
                         let build_path = build_path_buf.as_path();
-                        std::fs::create_dir(build_path);
+                        match std::fs::create_dir(build_path) {
+                            Ok(_) => {},
+                            Err(e) => {
+                                println!("Error: cannot create directory {} {}", build_path.display(), e);
+                            }
+                        }
                         let build_path_s = build_path.to_str().unwrap().to_string();
                         self.execute_command(&command, &parameters, &build_path_s);
 
@@ -160,9 +159,6 @@ impl Build {
                                 command = "make".to_string();
                                 parameters = ["-j8"].to_vec();
                             },
-                            _ => {
-                                return false;
-                            }
                         }
                         self.execute_command(&command, &parameters, &build_path_s);
                     },

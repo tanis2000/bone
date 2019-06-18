@@ -9,7 +9,6 @@ pub enum Target {
     Android,
     Ios,
     Web,
-    Unknown,
 }
 
 impl Display for Target {
@@ -33,29 +32,7 @@ impl Display for Target {
             Target::Web => {
                 write!(f, "web")
             }
-            _ => {
-                write!(f, "unknown")
-            }
         }
     }
 }
 
-pub struct BuildConfig {
-    supported_targets: Vec<Target>,
-
-}
-
-pub struct Config {
-    build: BuildConfig,
-}
-
-impl Config {
-    pub fn default() -> Self {
-        let targets = vec![Target::Mac, Target::Windows, Target::Linux, Target::Android, Target::Ios, Target::Web];
-        Config {
-            build: BuildConfig {
-                supported_targets: targets
-            }
-        }
-    }
-} 

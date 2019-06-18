@@ -1,7 +1,5 @@
-use serde_json::{Result, Value};
-use std::io;
 use std::io::prelude::*;
-use std::fs::{self, DirEntry, File};
+use std::fs::{File};
 use std::path::Path;
 use std::process::Command;
 use crate::utils::Processor;
@@ -18,7 +16,7 @@ pub struct Init {
 impl Init {
     pub fn run(&self) {
         let mut engine = self.engine.clone();
-        let app = self.app.clone().unwrap();
+        let _app = self.app.clone().unwrap();
         let project_name = self.project_name.clone().unwrap();
         let dir = self.dir.clone().unwrap();
         match engine {
@@ -43,13 +41,37 @@ impl Init {
                     println!("Cannot initialize git in directory {}", dir);
                     return;
                 }
-                std::fs::create_dir(path);
+                match std::fs::create_dir(path) {
+                    Ok(_) => {},
+                    Err(e) => {
+                        println!("Cannot create directory {} {}", path.display(), e);
+                        return;
+                    }
+                }
                 let src_path = path.join("src");
-                std::fs::create_dir(src_path);
+                match std::fs::create_dir(src_path) {
+                    Ok(_) => {},
+                    Err(e) => {
+                        println!("Cannot create directory {}", e);
+                        return;
+                    }
+                }
                 let build_path = path.join("build");
-                std::fs::create_dir(build_path);
+                match std::fs::create_dir(build_path) {
+                    Ok(_) => {},
+                    Err(e) => {
+                        println!("Cannot create directory {}", e);
+                        return;
+                    }
+                }
                 let assets_path = path.join("assets");
-                std::fs::create_dir(assets_path.as_path());
+                match std::fs::create_dir(assets_path.as_path()) {
+                    Ok(_) => {},
+                    Err(e) => {
+                        println!("Cannot create directory {}", e);
+                        return;
+                    }
+                }
                 if engine == "binocle" {
                     // Assets
                     Init::copy_file(include_bytes!("../../templates/binocle/assets/wabbit_alpha.png"), assets_path.join("wabbit_alpha.png").as_path());
@@ -78,7 +100,13 @@ impl Init {
                 } else {
                     // Folders
                     let gameplay_path = path.join("src").join("gameplay");
-                    std::fs::create_dir(gameplay_path.as_path());
+                    match std::fs::create_dir(gameplay_path.as_path()) {
+                        Ok(_) => {},
+                        Err(e) => {
+                            println!("Cannot create directory {}", e);
+                            return;
+                        }
+                    }
 
                     // Assets
                     Init::copy_file(include_bytes!("../../templates/binocle-c/assets/default.frag"), assets_path.join("default.frag").as_path());
@@ -155,7 +183,7 @@ impl Init {
     pub fn submodule_binocle_c(&self, dir: &String) -> bool {
         println!("Adding submodule binocle-c in {}", dir);
         let output = Command::new("/usr/bin/git")
-        .args(&["submodule", "add", "git@gitlab.com:Santinelli/binocle-c.git", "./binocle-c", "-b", "master", "--depth", "5"])
+        .args(&["submodule", "add", "https://github.com/tanis2000/binocle-c.git", "./binocle-c", "-b", "master", "--depth", "5"])
         .current_dir(dir)
         .output()
         .expect("Failed to initialize binocle-c submodule");
@@ -175,10 +203,15 @@ impl Init {
     }
 
     pub fn copy_file(bytes: &[u8], path: &Path) {
-        let mut file = File::create(path);
+        let file = File::create(path);
         match file {
             Ok(mut file) => {
-                file.write_all(bytes);
+                match file.write_all(bytes) {
+                    Ok(_) => {},
+                    Err(e) => {
+                        println!("Error: cannot write to file {} {}", path.to_string_lossy(), e.to_string());
+                    }
+                }
             },
             Err(e) => {
                 println!("Error: cannot create file {} {}", path.to_string_lossy(), e.to_string());

@@ -1,9 +1,7 @@
-use serde_json::{Result, Value};
-use std::io;
+use serde_json::{Value};
 use std::io::prelude::*;
-use std::fs::{self, DirEntry, File};
+use std::fs::{File};
 use std::path::Path;
-use std::process::Command;
 use crate::utils::Processor;
 
 #[derive(Default, Builder, Debug)]
@@ -15,7 +13,7 @@ pub struct Update {
 
 impl Update {
     pub fn run(&self) {
-        let app = self.app.clone().unwrap();
+        let _app = self.app.clone().unwrap();
         let dir = self.dir.clone().unwrap();
 
         println!("Updating project in {}", dir);
