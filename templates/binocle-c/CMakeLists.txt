@@ -69,6 +69,9 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl/include
     ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl_mixer
     ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/stb_image
+    ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/luajit/src
+    ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/physfs
+    ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sokol
     ${CMAKE_SOURCE_DIR}/binocle-c/src/binocle/core
     ${CMAKE_SOURCE_DIR}/src/gameplay
 )
