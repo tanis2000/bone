@@ -52,7 +52,9 @@ elseif(ANDROID)
 	message("Including Android defines")
 	include(BinocleAndroid)
 elseif(EMSCRIPTEN)
-	message("Including Emscripten defines")
+    message("Setting BINOCLE_DATA_DIR before including web settings")
+    set(BINOCLE_DATA_DIR "../assets/")
+    message("Including Emscripten defines")
 	include(BinocleWeb)
 endif()
 
@@ -69,7 +71,6 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl/include
     ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl_mixer
     ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/stb_image
-    ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/luajit/src
     ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/physfs
     ${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sokol
     ${CMAKE_SOURCE_DIR}/binocle-c/src/binocle/core
@@ -77,6 +78,7 @@ include_directories(
 )
 
 if (APPLE)
+    include_directories(${PROJECT_SOURCE_DIR}/../binocle-c/src/deps/luajit/src)
     if (IOS)
         include_directories(${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl/include/configs/default)
     else ()
@@ -86,15 +88,18 @@ if (APPLE)
 endif ()
 
 if (ANDROID)
+    include_directories(${PROJECT_SOURCE_DIR}/../binocle-c/src/deps/luajit/src)
     include_directories(${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl/include/configs/default)
 endif ()
 
 if (WIN32)
+    include_directories(${PROJECT_SOURCE_DIR}/../binocle-c/src/deps/luajit/src)
     include_directories(${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl/include/configs/windows)
     include_directories(${CMAKE_SOURCE_DIR}/binocle-c/src/deps/glew/include)
 endif ()
 
 if (EMSCRIPTEN)
+    include_directories(${PROJECT_SOURCE_DIR}/../binocle-c/src/deps/lua/src)
     include_directories(${CMAKE_SOURCE_DIR}/binocle-c/src/deps/sdl/include/configs/default)
 endif ()
 
