@@ -37,16 +37,16 @@ impl Init {
                     println!("Directory {} already exists", dir);
                     return;
                 }
-                if !self.init_git(&dir) {
-                    println!("Cannot initialize git in directory {}", dir);
-                    return;
-                }
                 match std::fs::create_dir(path) {
                     Ok(_) => {},
                     Err(e) => {
                         println!("Cannot create directory {} {}", path.display(), e);
                         return;
                     }
+                }
+                if !self.init_git(&dir) {
+                    println!("Cannot initialize git in directory {}", dir);
+                    return;
                 }
                 let src_path = path.join("src");
                 match std::fs::create_dir(src_path) {

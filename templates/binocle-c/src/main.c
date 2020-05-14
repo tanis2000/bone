@@ -1,6 +1,6 @@
 //
 //  Binocle
-//  Copyright(C)2015-2018 Valerio Santinelli
+//  Copyright(C)2015-2020 Valerio Santinelli
 //
 
 #include <stdio.h>
@@ -31,14 +31,14 @@ binocle_window window;
 binocle_input input;
 binocle_viewport_adapter adapter;
 binocle_camera camera;
-binocle_sprite player;
+binocle_sprite *player;
 kmVec2 player_pos;
 binocle_gd gd;
 binocle_bitmapfont *font;
-binocle_image font_image;
-binocle_texture font_texture;
-binocle_material font_material;
-binocle_sprite font_sprite;
+binocle_image *font_image;
+binocle_texture *font_texture;
+binocle_material *font_material;
+binocle_sprite *font_sprite;
 kmVec2 font_sprite_pos;
 char *binocle_assets_dir;
 
@@ -55,15 +55,15 @@ void main_loop() {
   }
 
 
-  if (binocle_input_is_key_pressed(input, KEY_RIGHT)) {
+  if (binocle_input_is_key_pressed(&input, KEY_RIGHT)) {
     player_pos.x += 50 * (1.0/window.frame_time);
-  } else if (binocle_input_is_key_pressed(input, KEY_LEFT)) {
+  } else if (binocle_input_is_key_pressed(&input, KEY_LEFT)) {
     player_pos.x -= 50 * (1.0/window.frame_time);
   }
 
-  if (binocle_input_is_key_pressed(input, KEY_UP)) {
+  if (binocle_input_is_key_pressed(&input, KEY_UP)) {
     player_pos.y += 50 * (1.0/window.frame_time);
-  } else if (binocle_input_is_key_pressed(input, KEY_DOWN)) {
+  } else if (binocle_input_is_key_pressed(&input, KEY_DOWN)) {
     player_pos.y -= 50 * (1.0/window.frame_time);
   }
 
@@ -71,7 +71,7 @@ void main_loop() {
   kmVec2 scale;
   scale.x = 1.0f;
   scale.y = 1.0f;
-  binocle_sprite_draw(player, &gd, (uint64_t)player_pos.x, (uint64_t)player_pos.y, adapter.viewport, 0, scale, &camera);
+  binocle_sprite_draw(player, &gd, (uint64_t)player_pos.x, (uint64_t)player_pos.y, &adapter.viewport, 0, &scale, &camera);
   kmMat4 view_matrix;
   kmMat4Identity(&view_matrix);
   binocle_bitmapfont_draw_string(font, "TEST", 12, &gd, 20, 20, adapter.viewport, binocle_color_white(), view_matrix);
@@ -92,17 +92,17 @@ int main(int argc, char *argv[])
   binocle_assets_dir = binocle_sdl_assets_dir();
   char filename[1024];
   sprintf(filename, "%s%s", binocle_assets_dir, "wabbit_alpha.png");
-  binocle_image image = binocle_image_load(filename);
-  binocle_texture texture = binocle_texture_from_image(image);
+  binocle_image *image = binocle_image_load(filename);
+  binocle_texture *texture = binocle_texture_from_image(image);
   char vert[1024];
   sprintf(vert, "%s%s", binocle_assets_dir, "default.vert");
   char frag[1024];
   sprintf(frag, "%s%s", binocle_assets_dir, "default.frag");
-  binocle_shader shader = binocle_shader_load_from_file(vert, frag);
-  binocle_material material = binocle_material_new();
-  material.texture = &texture;
-  material.shader = &shader;
-  player = binocle_sprite_from_material(&material);
+  binocle_shader *shader = binocle_shader_load_from_file(vert, frag);
+  binocle_material *material = binocle_material_new();
+  material->albedo_texture = texture;
+  material->shader = shader;
+  player = binocle_sprite_from_material(material);
   player_pos.x = 50;
   player_pos.y = 50;
 
@@ -115,10 +115,10 @@ int main(int argc, char *argv[])
   font_image = binocle_image_load(font_image_filename);
   font_texture = binocle_texture_from_image(font_image);
   font_material = binocle_material_new();
-  font_material.texture = &font_texture;
-  font_material.shader = &shader;
-  font->material = &font_material;
-  font_sprite = binocle_sprite_from_material(&font_material);
+  font_material->albedo_texture = font_texture;
+  font_material->shader = shader;
+  font->material = font_material;
+  font_sprite = binocle_sprite_from_material(font_material);
   font_sprite_pos.x = 0;
   font_sprite_pos.y = -256;
 

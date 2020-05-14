@@ -35,7 +35,11 @@ SET(VERSION_MINOR "1")
 SET(VERSION_PATCH "0")
 SET(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
-set(BINOCLE_LINK_LIBRARIES binocle-static)
+if (NOT EMSCRIPTEN)
+    set(BINOCLE_LINK_LIBRARIES binocle-static luajit-5.1)
+else()
+    set(BINOCLE_LINK_LIBRARIES binocle-static lua)
+endif()
 
 if (MSVC)
 	message("Including Windows defines")

@@ -32,8 +32,10 @@ fn main() {
         default_target_os = "web";
     }
 
+    const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
+
     let matches = App::new("Bone")
-    .version("0.1.0")
+    .version(VERSION.unwrap_or("unknown"))
     .author("Valerio Santinelli")
     .subcommand(SubCommand::with_name("init")
     .about("Initialize a new Binocle project")
