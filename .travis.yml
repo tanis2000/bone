@@ -20,6 +20,8 @@ matrix:
     - PACKAGE=bone-windows.tgz
 cache: cargo
 script:
+- rustup target list
+- rustup target add $TARGET
 - cargo build --target $TARGET --verbose --release
 - cargo test --target $TARGET --verbose --release
 - ls -al target/$TARGET/release/
